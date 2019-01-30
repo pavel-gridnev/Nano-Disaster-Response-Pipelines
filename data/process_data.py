@@ -36,11 +36,12 @@ def clean_data(df):
 
     cleaned_df.drop_duplicates(inplace=True)
 
-    assert len(cleaned_df.columns) == 40, "Wrong number of columns in dataframe"
+    constant_columns = [column for column in cleaned_df.columns[4:] if len(cleaned_df[column].unique().tolist()) == 1]
+    if len(constant_columns):
+        cleaned_df.drop(constant_columns, axis=1, inplace=True)
+
     assert cleaned_df.duplicated().sum() == 0, "Data frame has duplicates"
-
     return cleaned_df
-
 
 def save_data(df, database_filename, table_name='DisasterResponseTable'):
     """
