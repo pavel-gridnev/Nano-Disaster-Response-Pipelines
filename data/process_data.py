@@ -40,7 +40,7 @@ def clean_data(df):
     if len(constant_columns):
         cleaned_df.drop(constant_columns, axis=1, inplace=True)
 
-    assert cleaned_df.duplicated().sum() == 0, "Data frame has duplicates"
+    assert cleaned_df.duplicated().sum() == 0, "Dataframe has duplicates"
     return cleaned_df
 
 def save_data(df, database_filename, table_name='DisasterResponseTable'):
