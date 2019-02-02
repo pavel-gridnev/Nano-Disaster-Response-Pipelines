@@ -38,6 +38,11 @@ for the model:
 1. n_estimators=10
 1. max_depth=500
 
+### Web aplication
+Defailt page of web application shows 2 visuals:
+1. Count of predicted labels for each category sorted from the most common.
+1. Average message size for each genre.   
+
 ### Evaluation results
 Trained classification model exhibits good results for accuracy of around 80-90% 
 for categories with sufficient amount of positive labels. Recall values shuld be improved significantly, 

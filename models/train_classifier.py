@@ -1,5 +1,8 @@
 import sys
 import nltk
+
+from models.wordutils import tokenize
+
 nltk.download(['punkt', 'wordnet'], quiet=True)
 from sqlalchemy import create_engine
 import pandas as pd
@@ -33,16 +36,6 @@ def load_data(database_filepath, table_name='DisasterResponseTable') :
     return X, y, category_names
 
 
-def tokenize(text):
-    """
-    Tokenize free text by lower casing text, splitting into words, lemmatazing separate words
-    :param text: free text
-    :return: list of tokens
-    """
-    tokens = word_tokenize(text)
-    lemmatizer = WordNetLemmatizer()
-    clean_tokens = [lemmatizer.lemmatize(tok).lower().strip() for tok in tokens]
-    return clean_tokens
 
 
 def build_model():

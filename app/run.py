@@ -12,6 +12,7 @@ from sklearn.externals import joblib
 from sqlalchemy import create_engine
 
 
+
 app = Flask(__name__)
 
 def tokenize(text):
@@ -25,6 +26,7 @@ def tokenize(text):
 
     return clean_tokens
 
+
 # load data
 engine = create_engine('sqlite:///../data/DisasterResponse.db')
 df = pd.read_sql_table('DisasterResponseTable', engine)
@@ -33,31 +35,52 @@ df = pd.read_sql_table('DisasterResponseTable', engine)
 model = joblib.load("../models/classifier.pkl")
 
 
+
 # index webpage displays cool visuals and receives user input text for model
 @app.route('/')
 @app.route('/index')
 def index():
     
     # extract data needed for visuals
-    # TODO: Below is an example - modify to extract data for your own visuals
-    genre_counts = df.groupby('genre').count()['message']
-    genre_names = list(genre_counts.index)
-    
+    category_counts = df.iloc[:, 4:].sum().sort_values(ascending=False)
+    category_names = [category.title().replace('_', ' ') for category in category_counts.index]
+
+    df['message_len'] =df['message'].str.len()
+    message_len_genre = df[['message_len', 'genre']].groupby('genre').mean().astype(int)['message_len']
+    message_len_genre_names = [genre.title() for genre in message_len_genre.index]
+
     # create visuals
-    # TODO: Below is an example - modify to create your own visuals
     graphs = [
         {
             'data': [
                 Bar(
-                    x=genre_names,
-                    y=genre_counts
+                    x=category_names,
+                    y=category_counts
                 )
             ],
 
             'layout': {
-                'title': 'Distribution of Message Genres',
+                'title': 'Labels count distribution per category',
                 'yaxis': {
                     'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Category Name"
+                }
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    x=message_len_genre_names,
+                    y=message_len_genre
+                )
+            ],
+
+            'layout': {
+                'title': 'Genre average message length',
+                'yaxis': {
+                    'title': "Average letters in message"
                 },
                 'xaxis': {
                     'title': "Genre"
