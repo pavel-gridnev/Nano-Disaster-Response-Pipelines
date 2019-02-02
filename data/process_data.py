@@ -36,12 +36,19 @@ def clean_data(df):
 
     cleaned_df.drop_duplicates(inplace=True)
 
+    # remove columns with only one unique value in it
     constant_columns = [column for column in cleaned_df.columns[4:] if len(cleaned_df[column].unique().tolist()) == 1]
     if len(constant_columns):
         cleaned_df.drop(constant_columns, axis=1, inplace=True)
 
+    # remove rows from 'related' category with value 2 (incomplete)
+    cleaned_df = cleaned_df[cleaned_df['related']<=1]
+    # remove empty rows - not a single category value
+    cleaned_df = cleaned_df[cleaned_df.iloc[:,4:].max(axis=1)>0]
+
     assert cleaned_df.duplicated().sum() == 0, "Dataframe has duplicates"
     return cleaned_df
+
 
 def save_data(df, database_filename, table_name='DisasterResponseTable'):
     """
