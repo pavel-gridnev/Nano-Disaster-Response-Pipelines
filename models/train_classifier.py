@@ -1,13 +1,14 @@
 import sys
 import nltk
 
-from models.wordutils import tokenize
+from nltk import word_tokenize, WordNetLemmatizer
+
 
 nltk.download(['punkt', 'wordnet'], quiet=True)
 from sqlalchemy import create_engine
 import pandas as pd
-from nltk.tokenize import word_tokenize
-from nltk.stem import WordNetLemmatizer
+# from nltk.tokenize import word_tokenize
+# from nltk.stem import WordNetLemmatizer
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.ensemble import RandomForestClassifier
@@ -35,7 +36,16 @@ def load_data(database_filepath, table_name='DisasterResponseTable') :
     category_names = df.columns[4:]
     return X, y, category_names
 
-
+def tokenize(text):
+    """
+    Tokenize free text by lower casing text, splitting into words, lemmatazing separate words
+    :param text: free text
+    :return: list of tokens
+    """
+    tokens = word_tokenize(text)
+    lemmatizer = WordNetLemmatizer()
+    clean_tokens = [lemmatizer.lemmatize(tok).lower().strip() for tok in tokens]
+    return clean_tokens
 
 
 def build_model():
